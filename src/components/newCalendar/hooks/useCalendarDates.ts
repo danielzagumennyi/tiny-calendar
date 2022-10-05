@@ -9,34 +9,36 @@ import {
   subDateByPicker,
 } from "../utils/utils";
 
-export type IUseCalendarDates = Pick<ICalendarProps, "dates" | "range" | "picker" | "columns"> & {
+export type IUseCalendarDates = Pick<Required<ICalendarProps>, "value" | "picker" | "columns" | "rows"> & {
   date?: Date;
   defaultStartDate: Date;
 };
 
 export const useCalendarDates = ({
   date,
-  dates,
+  value: dates,
   picker = defaultPickerType,
-  range,
+  value,
   columns,
+  rows,
   defaultStartDate,
 }: IUseCalendarDates) => {
   const [startDate, setStartDate] = useState<Date>(
-    date || dates?.[0] || range?.[0] || defaultStartDate,
+    date || dates?.[0] || value?.[0] || defaultStartDate,
   );
 
-  const baseDates = useMemo(() => {
-    return Array(columns)
+  const startDates = useMemo(() => {
+    return Array(columns * rows)
       .fill(true)
       .map((_, index) => addDateByPicker(getBaseDate({ picker, startDate }), index, picker));
   }, [columns, picker, startDate]);
+  console.log("🚀 ~ file: useCalendarDates.ts ~ line 35 ~ baseDates ~ baseDates", startDates)
 
   const allDates = useMemo(() => {
-    const additionalFirstBaseDate = subDateByPicker(baseDates[0], 1, picker);
-    const additionalLastBaseDate = addDateByPicker(baseDates[baseDates.length - 1], 1, picker);
+    const additionalFirstBaseDate = subDateByPicker(startDates[0], 1, picker);
+    const additionalLastBaseDate = addDateByPicker(startDates[startDates.length - 1], 1, picker);
 
-    return [additionalFirstBaseDate, ...baseDates, additionalLastBaseDate].reduce<
+    return [additionalFirstBaseDate, ...startDates, additionalLastBaseDate].reduce<
       Record<number, IBasePanelDatesData>
     >(
       (acc, baseDate) => ({
@@ -45,15 +47,15 @@ export const useCalendarDates = ({
       }),
       {},
     );
-  }, [baseDates, picker]);
+  }, [startDates, picker]);
 
   const handlePrev = useCallback(() => {
-    setStartDate((prev) => subDateByPicker(prev, baseDates.length, picker));
-  }, [baseDates.length, picker]);
+    setStartDate((prev) => subDateByPicker(prev, startDates.length, picker));
+  }, [startDates.length, picker]);
 
   const handleNext = useCallback(() => {
-    setStartDate((prev) => addDateByPicker(prev, baseDates.length, picker));
-  }, [baseDates.length, picker]);
+    setStartDate((prev) => addDateByPicker(prev, startDates.length, picker));
+  }, [startDates.length, picker]);
 
-  return { baseDates, allDates, handleNext, handlePrev, setStartDate };
+  return { baseDates: startDates, allDates, handleNext, handlePrev, setStartDate };
 };

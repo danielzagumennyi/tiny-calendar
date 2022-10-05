@@ -1,8 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
-import { useStore } from './components/newCalendar/hooks/useStore'
-import { NewCalendar } from './components/newCalendar/NewCalendar'
-import { Context } from './context/context'
+import { Calendar } from './components/newCalendar/components/Calendar'
+import { Provider } from './context/context'
 
 const GlobalStyles = createGlobalStyle`
   body, html {
@@ -15,54 +14,25 @@ const GlobalStyles = createGlobalStyle`
     margin: 0;
     box-sizing: border-box;
   }
-
 `
 
 function App() {
+  const [value, setValue] = useState<Date[] | null | undefined>()
   return (
     <div>
       <GlobalStyles />
+      <div>
+        {JSON.stringify(value)}
+      </div>
+      <Provider value={value} onChange={setValue}>
       <BaseExample />
+      </Provider>
     </div>
   )
 }
 
-
 const BaseExample = () => {
-
-  const store = useStore()
-
-  const prevButton = useMemo(() => {
-    return (
-      <LeftButton
-        onClick={store.handlePrev}
-      >
-        &larr;
-        </LeftButton>
-    );
-  }, [store.handlePrev]);
-
-  const nextButton = useMemo(() => {
-    return (
-      <RightButton  onClick={store.handleNext}
-      
-      >
-        &rarr;
-        </RightButton>
-    );
-  }, [store.handleNext]);
-
-
-  return <Context.Provider value={value}>
-    <NewCalendar />
-  </Context.Provider>
+  return <Calendar />
 }
-
-
-const LeftButton = styled.div`
-`;
-
-const RightButton = styled.div`
- `;
 
 export default App
