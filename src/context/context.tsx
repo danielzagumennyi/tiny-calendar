@@ -31,7 +31,6 @@ export const Provider = ({ children, ...props }: { children: ReactNode } & ICale
     disabled,
     minDate,
     maxDate,
-    alwaysRange = true, // toDo fix it
     onChange,
     onClear,
     weekStartDay = 0,
@@ -165,22 +164,16 @@ export const Provider = ({ children, ...props }: { children: ReactNode } & ICale
 
         onChange?.(sortedDates);
       } else {
-        if (!alwaysRange && date.value !== value?.[0] && date.value === value?.[1]) {
-          onChange?.([date.value, date.value]);
-        } else if (!alwaysRange && date.value === value?.[0] && date.value === value?.[1]) {
-          onChange?.([]);
-        } else {
-          setLocalRange(
-            hoverRange
-              ? { start: hoverRangeValue.start }
-              : {
-                start: date.value,
-              },
-          );
-        }
+        setLocalRange(
+          hoverRange
+            ? { start: hoverRangeValue.start }
+            : {
+              start: date.value,
+            },
+        );
       }
     },
-    [alwaysRange, hoverRange, hoverRangeValue, localRange, onChange, validateRange],
+    [hoverRange, hoverRangeValue, localRange, onChange, validateRange],
   );
 
   const handleDateHover = useCallback(
@@ -259,7 +252,6 @@ export const Provider = ({ children, ...props }: { children: ReactNode } & ICale
     const store = {
       value,
       allDates,
-      alwaysRange,
       baseDates,
       columns,
       rows,

@@ -32,16 +32,10 @@ export const PanelHeader = ({
 };
 
 const WeekDays = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(32px, 1fr));
-  grid-gap: 4px;
-  margin-bottom: 8px;
-  align-items: center;
-  justify-items: center;
-  place-content: center;
-  position: relative;
-  min-height: 32px;
+  display: flex;
+  text-align: center;
 `;
 
 const WeekDay = styled.div`
+  flex: 1;
 `;

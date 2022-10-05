@@ -1,14 +1,9 @@
-
 import { memo } from "react";
 import styled from "styled-components";
-import { useStore } from "../../../context/context";
+import { Provider, useStore } from "../../../context/context";
 
-import {
-  ICalendarModeType
-} from "../hooks/useCalendarParseDates";
-import {
-  IObjectRange, IWeekDay
-} from "../utils/utils";
+import { ICalendarModeType } from "../hooks/useCalendarParseDates";
+import { IObjectRange, IWeekDay } from "../utils/utils";
 import { DaysCell, DaysGrid, Panel } from "./Panel";
 import { PanelHeader } from "./PanelHeader";
 
@@ -25,10 +20,8 @@ export type ICalendarProps = {
   mode?: ICalendarModeType;
   locale?: string;
 
-  
   value?: Date[] | null;
 
-  alwaysRange?: boolean;
   onChange?: (v: Date[]) => void;
   onClear?: () => void;
 
@@ -48,10 +41,8 @@ export type ICalendarProps = {
   validateRange?: (dates: Required<IObjectRange>) => boolean;
 };
 
-
-const _Calendar = memo((props: ICalendarProps) => {
-  
-  const  {
+const _Calendar = memo(() => {
+  const {
     value,
     allDates,
     alwaysRange,
@@ -67,7 +58,7 @@ const _Calendar = memo((props: ICalendarProps) => {
     handleDateClick,
     dynamicPicker,
     handleDateHover,
-  } = useStore()
+  } = useStore();
 
   return (
     <Wrapper>
@@ -116,31 +107,33 @@ const _Calendar = memo((props: ICalendarProps) => {
       </PanelsGrid>
 
       {dynamicPicker === "month" && (
-        <DynamicPickerWrapper>
-          <Calendar
-            {...props}
-            mode={"date"}
-            picker="month"
-            onChange={(date) => {
-              setDynamicPicker(null);
-              setStartDate(date);
-            }}
-          />
-        </DynamicPickerWrapper>
+        <Provider
+          mode={"date"}
+          picker="month"
+          onChange={(date) => {
+            setDynamicPicker(null);
+            setStartDate(date);
+          }}
+        >
+          <DynamicPickerWrapper>
+            <Calendar />
+          </DynamicPickerWrapper>
+        </Provider>
       )}
 
       {dynamicPicker === "year" && (
-        <DynamicPickerWrapper>
-          <Calendar
-            {...props}
-            mode={"date"}
-            picker="year"
-            onChange={(date) => {
-              setDynamicPicker(null);
-              setStartDate(date);
-            }}
-          />
-        </DynamicPickerWrapper>
+        <Provider
+          mode={"date"}
+          picker="year"
+          onChange={(date) => {
+            setDynamicPicker(null);
+            setStartDate(date);
+          }}
+        >
+          <DynamicPickerWrapper>
+            <Calendar />
+          </DynamicPickerWrapper>
+        </Provider>
       )}
     </Wrapper>
   );
@@ -187,7 +180,6 @@ const PanelsItem = styled.div`
   flex-direction: column;
 `;
 
-
 const HeaderControls = styled.div`
   display: flex;
   align-items: center;
@@ -196,10 +188,6 @@ const HeaderControls = styled.div`
 
 const HeaderTitle = styled.div`
   display: flex;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 `;
 
 const Header = styled.div`

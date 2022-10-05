@@ -31,14 +31,13 @@ export const Panel = memo(
     );
 
     return (
-      <DaysGrid $big={picker !== "day"}>
+      <DaysGrid>
         {chunks.map((chunk, index) => (
           <DaysGridRow key={index}>
             {chunk.map((day) => (
               <DaysCell
                 as={day.isExternal ? "span" : "div"}
                 key={day.value.valueOf()}
-                $big={picker !== "day"}
                 $weekend={day.isWeekend}
                 $external={day.isExternal}
                 $disabled={day.isDisabled}
@@ -65,20 +64,11 @@ export const Panel = memo(
 const DaysGridRow = styled.div`
   display: flex;
   width: 100%;
-  height: 100%;
 `;
 
-export const DaysGrid = styled.div<{
-  $big: boolean;
-}>`
-  align-items: center;
-  justify-items: center;
-  place-content: center;
-  position: relative;
+export const DaysGrid = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 1;
-  grid-auto-rows: 1fr;
 `;
 
 
@@ -90,35 +80,27 @@ export const DaysCell = styled.div<
     $between: boolean;
     $disabled: boolean;
     $today: boolean;
-    $big: boolean;
   }>
 >`
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 32px;
-  min-height: 32px;
   cursor: pointer;
   user-select: none;
   width: 100%;
-  border: 1px solid grey;
+  border: 1px solid Gainsboro;
+  padding: 4px;
 
   &:hover {
-    background-color: grey;
+    background-color: silver;
   }
 
-  ${(p) =>
-    p.$big &&
-    css`
-      min-width: 64px;
-      min-height: 60px;
-    `};
 
   ${(p) =>
     p.$today &&
     css`
-      color: blue;
+      color: DodgerBlue;
     `};
 
   ${(p) =>
@@ -131,6 +113,7 @@ export const DaysCell = styled.div<
     p.$external &&
     css`
       text-decoration: line-through;
+      color: silver;
     `};
 
   ${(p) =>
@@ -152,13 +135,6 @@ export const DaysCell = styled.div<
       position: relative;
 
       &:hover {
-        background-color: #afafc7;
-      }
-
-      &::before {
-        content: "";
-        height: 100%;
-        position: absolute;
         background-color: #afafc7;
       }
 
